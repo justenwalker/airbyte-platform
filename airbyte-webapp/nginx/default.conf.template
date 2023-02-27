@@ -29,6 +29,11 @@ server {
         sub_filter_once on;
     }
 
+    location /.well-known/readyz {
+        add_header Content-Type text/plain;
+        return 200 'OK';
+    }
+
     error_page   500 502 503 504  /50x.html;
     location = /50x.html {
         root   /usr/share/nginx/html;
