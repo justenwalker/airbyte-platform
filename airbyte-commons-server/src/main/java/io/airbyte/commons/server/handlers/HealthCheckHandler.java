@@ -8,6 +8,7 @@ import io.airbyte.api.model.generated.HealthCheckRead;
 import io.airbyte.config.persistence.ConfigRepository;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * HealthCheckHandler. Javadocs suppressed because api docs should be used as source of truth.
@@ -18,12 +19,22 @@ public class HealthCheckHandler {
 
   private final ConfigRepository repository;
 
+  private final AtomicBoolean ready = new AtomicBoolean(false);
+
   public HealthCheckHandler(@Named("configRepository") final ConfigRepository repository) {
     this.repository = repository;
   }
 
   public HealthCheckRead health() {
     return new HealthCheckRead().available(repository.healthCheck());
+  }
+
+  public boolean isReady() {
+    return this.ready.get();
+  }
+
+  public void setReady(boolean ready) {
+    this.ready.set(ready);
   }
 
 }
